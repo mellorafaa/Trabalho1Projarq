@@ -62,7 +62,7 @@ public class PedidoRepositoryJDBC implements PedidoRepository {
             return ps;
         }, keyHolder);
 
-        long idGerado = keyHolder.getKey().longValue();
+        long idGerado = ((Number) keyHolder.getKeys().get("ID")).longValue();
 
         String sqlItem =
             "INSERT INTO itens_pedido (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)";
@@ -150,6 +150,45 @@ public class PedidoRepositoryJDBC implements PedidoRepository {
                     return new ItemPedido(produto, rs.getInt("quantidade"));
                 }
         );
+    }
+
+    @Override
+    public List<Pedido> listarTodos() {
+        String sql =
+            "SELECT id, cliente_cpf, status, valor, impostos, desconto, " +
+            "       valor_cobrado, data_hora_pagamento FROM pedidos";
+
+        List<Pedido> pedidosParciais = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Cliente cliente = clienteRepository.recuperarPorCpf(rs.getString("cliente_cpf"));
+            Pedido.Status status = Pedido.Status.valueOf(rs.getString("status"));
+            LocalDateTime dataHoraPagamento = null;
+            Timestamp ts = rs.getTimestamp("data_hora_pagamento");
+            if (ts != null) {
+                dataHoraPagamento = ts.toLocalDateTime();
+            }
+            return new Pedido(
+                    rs.getLong("id"),
+                    cliente,
+                    dataHoraPagamento,
+                    new ArrayList<>(),
+                    status,
+                    rs.getDouble("valor"),
+                    rs.getDouble("impostos"),
+                    rs.getDouble("desconto"),
+                    rs.getDouble("valor_cobrado")
+            );
+        });
+
+        List<Pedido> pedidosCompletos = new ArrayList<>();
+        for (Pedido p : pedidosParciais) {
+            List<ItemPedido> itens = recuperarItensDoPedido(p.getId());
+            pedidosCompletos.add(new Pedido(
+                    p.getId(), p.getCliente(), p.getDataHoraPagamento(),
+                    itens, p.getStatus(), p.getValor(),
+                    p.getImpostos(), p.getDesconto(), p.getValorCobrado()
+            ));
+        }
+        return pedidosCompletos;
     }
 
     @Override

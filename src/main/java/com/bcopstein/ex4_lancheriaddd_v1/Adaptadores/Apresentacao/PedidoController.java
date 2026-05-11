@@ -5,23 +5,38 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.ListarPedidosUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Requests.PedidoSubmissaoRequest;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.PedidoResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.SubmeterPedidoUC;
+import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido;
 
 @RestController
 @RequestMapping("/pedidos")
 public class PedidoController {
 
     private final SubmeterPedidoUC submeterPedidoUC;
+    private final ListarPedidosUC listarPedidosUC;
 
-    public PedidoController(SubmeterPedidoUC submeterPedidoUC) {
+    public PedidoController(SubmeterPedidoUC submeterPedidoUC, ListarPedidosUC listarPedidosUC) {
         this.submeterPedidoUC = submeterPedidoUC;
+        this.listarPedidosUC  = listarPedidosUC;
+    }
+
+    @GetMapping
+    @CrossOrigin("*")
+    public ResponseEntity<List<PedidoPresenter>> listarPedidos() {
+        List<Pedido> pedidos = listarPedidosUC.run();
+        List<PedidoPresenter> presenters = pedidos.stream()
+                .map(p -> montarPresenter(new PedidoResponse(p, true, "OK")))
+                .toList();
+        return ResponseEntity.ok(presenters);
     }
 
     @PostMapping
