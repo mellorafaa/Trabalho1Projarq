@@ -1,0 +1,201 @@
+/* ── Design tokens ──────────────────────────────────── */
+:root {
+  --red:        #c1121f;
+  --red-hover:  #a00f1a;
+  --orange:     #e07c2a;
+  --cream:      #fdf8f0;
+  --white:      #ffffff;
+  --dark:       #1a0800;
+  --gray:       #7a6a5a;
+  --border:     #ece4d8;
+  --shadow:     0 2px 14px rgba(0, 0, 0, 0.08);
+  --radius:     14px;
+  --transition: 0.18s ease;
+}
+
+/* ── Reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+.header {
+  background: var(--red);
+  color: var(--white);
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.01em;
+}
+.logo-icon { font-size: 1.7rem; }
+.logo-text strong { font-weight: 700; }
+
+/* ── Nav ────────────────────────────────────────────── */
+.nav { display: flex; gap: 0.5rem; }
+.nav-link {
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  transition: background var(--transition), color var(--transition);
+}
+.nav-link:hover,
+.nav-link.active {
+  background: rgba(255,255,255,0.18);
+  color: var(--white);
+}
+
+/* ── Main ───────────────────────────────────────────── */
+.main { flex: 1; }
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+/* ── Section title ──────────────────────────────────── */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.9rem;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+}
+
+/* ── Menu tabs ──────────────────────────────────────── */
+.menu-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+.tab-btn {
+  padding: 0.5rem 1.3rem;
+  border: 2px solid var(--red);
+  background: transparent;
+  color: var(--red);
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.tab-btn:hover { background: var(--red); color: var(--white); }
+.tab-btn.active { background: var(--red); color: var(--white); }
+
+/* ── Cardápio header ────────────────────────────────── */
+.cardapio-header { margin-bottom: 1.5rem; }
+.cardapio-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+/* ── Products grid ──────────────────────────────────── */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Product card ───────────────────────────────────── */
+.product-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  position: relative;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.product-card:hover {
+  border-color: var(--orange);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+.product-card.indicacao {
+  border-color: var(--orange);
+}
+
+.chef-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--orange);
+  color: var(--white);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.22rem 0.55rem;
+  border-radius: 5px;
+}
+
+.product-name {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  padding-right: 5.5rem;
+}
+
+.product-price {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--red);
+}
+
+/* ── State messages (loading / empty / error) ─────── */
+.state-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--gray);
+  padding: 4rem 0;
+  font-size: 1rem;
+}
+.state-msg.error { color: var(--red); }
+
+/* ── Footer ─────────────────────────────────────────── */
+.footer {
+  background: var(--dark);
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  padding: 1.25rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 600px) {
+  .section-title { font-size: 1.5rem; }
+  .products-grid { grid-template-columns: 1fr; }
+}

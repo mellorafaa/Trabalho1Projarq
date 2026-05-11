@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class Controller {
-    @GetMapping("")
+    @GetMapping("/api/welcome")
     @CrossOrigin("*")
     public String welcomeMessage() {
         return "Bem Vindo a Pizzaria ECA";

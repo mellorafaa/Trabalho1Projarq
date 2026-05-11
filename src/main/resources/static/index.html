@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizzaria ECA</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🍕</span>
+        <span class="logo-text">Pizzaria <strong>ECA</strong></span>
+      </div>
+      <nav class="nav" id="nav">
+        <a href="#cardapio" class="nav-link active" data-section="cardapio">Cardápio</a>
+        <!-- add more nav links here as features grow -->
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ── Cardápio section ─────────────────────────────── -->
+    <section class="section" id="cardapio">
+      <div class="container">
+        <h2 class="section-title">Nossos Cardápios</h2>
+
+        <div class="menu-tabs" id="menuTabs">
+          <!-- tabs injected by JS -->
+        </div>
+
+        <div class="cardapio-header" id="cardapioHeader" style="display:none">
+          <h3 class="cardapio-title" id="cardapioTitle"></h3>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+          <!-- products injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── add more sections here ──────────────────────── -->
+
+  </main>
+
+  <footer class="footer">
+    <p>🍕 Pizzaria ECA &mdash; Feito com muito queijo</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
