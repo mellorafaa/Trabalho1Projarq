@@ -207,4 +207,19 @@ public class PedidoRepositoryJDBC implements PedidoRepository {
 
         return count != null ? count : 0L;
     }
+
+    /**
+     * Atualiza o campo STATUS de um pedido no banco de dados.
+     *
+     * Usado por UC6 para marcar o pedido como CANCELADO.
+     * Reutilizável por UC7 (PAGO) e pelos serviços de cozinha/entrega.
+     *
+     * O status é persistido como o nome do enum (ex: "CANCELADO"),
+     * e recuperado com Pedido.Status.valueOf() em recuperarPorId.
+     */
+    @Override
+    public void atualizarStatus(long id, Pedido.Status novoStatus) {
+        String sql = "UPDATE pedidos SET status = ? WHERE id = ?";
+        jdbcTemplate.update(sql, novoStatus.name(), id);
+    }
 }

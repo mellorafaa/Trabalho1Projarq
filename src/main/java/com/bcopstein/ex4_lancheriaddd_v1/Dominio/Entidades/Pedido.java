@@ -12,7 +12,9 @@ public class Pedido {
         PREPARACAO,
         PRONTO,
         TRANSPORTE,
-        ENTREGUE
+        ENTREGUE,
+        // UC6: estado final quando o cliente cancela um pedido APROVADO mas ainda não PAGO
+        CANCELADO
     }
     private long id;
     private Cliente cliente;
