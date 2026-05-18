@@ -22,7 +22,7 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido;
 public class PedidoController {
 
     private final SubmeterPedidoUC submeterPedidoUC;
-    private final ListarPedidosUC listarPedidosUC;
+    private final ListarPedidosUC  listarPedidosUC;
 
     public PedidoController(SubmeterPedidoUC submeterPedidoUC, ListarPedidosUC listarPedidosUC) {
         this.submeterPedidoUC = submeterPedidoUC;
@@ -34,7 +34,7 @@ public class PedidoController {
     public ResponseEntity<List<PedidoPresenter>> listarPedidos() {
         List<Pedido> pedidos = listarPedidosUC.run();
         List<PedidoPresenter> presenters = pedidos.stream()
-                .map(p -> montarPresenter(new PedidoResponse(p, true, "OK")))
+                .map(p -> montarPresenter(new PedidoResponse(p, true, "OK", List.of())))
                 .toList();
         return ResponseEntity.ok(presenters);
     }
@@ -46,6 +46,7 @@ public class PedidoController {
 
         PedidoResponse response = submeterPedidoUC.run(
                 request.getClienteCpf(),
+                request.getEnderecoEntrega(),
                 request.getItens()
         );
 
@@ -59,11 +60,21 @@ public class PedidoController {
     }
 
     private PedidoPresenter montarPresenter(PedidoResponse response) {
+        List<PedidoPresenter.ItemPedidoPresenter> indisponiveis =
+                response.getItensIndisponiveis().stream()
+                        .map(item -> new PedidoPresenter.ItemPedidoPresenter(
+                                item.getItem().getId(),
+                                item.getItem().getDescricao(),
+                                item.getItem().getPreco(),
+                                item.getQuantidade()
+                        ))
+                        .collect(Collectors.toList());
 
         if (!response.isAprovado() || response.getPedido() == null) {
             return new PedidoPresenter(
                     0, "NEGADO", 0, 0, 0, 0,
-                    false, response.getMensagem(), List.of()
+                    false, response.getMensagem(), "",
+                    List.of(), indisponiveis
             );
         }
 
@@ -86,7 +97,9 @@ public class PedidoController {
                 response.getPedido().getValorCobrado(),
                 response.isAprovado(),
                 response.getMensagem(),
-                itensPresenter
+                response.getPedido().getEnderecoEntrega(),
+                itensPresenter,
+                List.of()
         );
     }
 }

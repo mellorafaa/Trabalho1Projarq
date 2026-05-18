@@ -15,14 +15,6 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.PedidoCalculador.Valor
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.PedidoService;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.PedidoValidador;
 
-/**
- * Use Case de aplicação para submeter um pedido.
- * Responsável pela orquestração do fluxo:
- * 1. Validar dados de entrada
- * 2. Validar cliente e itens
- * 3. Calcular valores
- * 4. Criar e persistir o pedido
- */
 @Component
 public class SubmeterPedidoUC {
 
@@ -35,59 +27,58 @@ public class SubmeterPedidoUC {
             PedidoValidador pedidoValidador,
             PedidoCalculador pedidoCalculador,
             PedidoService pedidoService) {
-        this.pedidoValidador = pedidoValidador;
+        this.pedidoValidador  = pedidoValidador;
         this.pedidoCalculador = pedidoCalculador;
-        this.pedidoService = pedidoService;
+        this.pedidoService    = pedidoService;
     }
 
-    public PedidoResponse run(String clienteCpf, List<ItemPedidoRequest> itensSolicitados) {
+    public PedidoResponse run(String clienteCpf, String enderecoEntrega,
+                              List<ItemPedidoRequest> itensSolicitados) {
 
-        // 1. Validar dados de entrada da aplicação
         if (!validarDadosEntrada(itensSolicitados)) {
-            return new PedidoResponse(null, false, "O pedido deve conter pelo menos um item");
+            return new PedidoResponse(null, false,
+                    "O pedido deve conter pelo menos um item", List.of());
         }
 
-        // 2. Validar dados individuais dos itens
+        if (enderecoEntrega == null || enderecoEntrega.isBlank()) {
+            return new PedidoResponse(null, false,
+                    "Endereço de entrega é obrigatório", List.of());
+        }
+
         String erroValidacao = validarItens(itensSolicitados);
         if (erroValidacao != null) {
-            return new PedidoResponse(null, false, erroValidacao);
+            return new PedidoResponse(null, false, erroValidacao, List.of());
         }
 
         try {
-            // 3. Converter requests em solicitações de domínio
             List<SolicitacaoItem> solicitacoes = converterParaSolicitacoes(itensSolicitados);
 
-            // 4. Validar cliente e existência dos produtos
             Cliente cliente = pedidoValidador.validarCliente(clienteCpf);
             List<ItemPedido> itens = pedidoValidador.validarEConverterItens(solicitacoes);
 
-            // 5. Validar estoque
-            pedidoValidador.validarEstoque(itens);
+            List<ItemPedido> itensIndisponiveis = pedidoValidador.verificarEstoque(itens);
+            if (!itensIndisponiveis.isEmpty()) {
+                return new PedidoResponse(null, false,
+                        "Pedido negado por falta de ingredientes", itensIndisponiveis);
+            }
 
-            // 6. Calcular valores do pedido
             ValorPedidoDto valores = pedidoCalculador.calcularValorCompleto(itens, clienteCpf);
 
-            // 7. Criar e persistir o pedido
-            Pedido pedidoAprovado = pedidoService.criarPedidoAprovado(cliente, itens, valores);
+            Pedido pedidoAprovado = pedidoService.criarEAprovarPedido(
+                    cliente, enderecoEntrega, itens, valores);
 
             return new PedidoResponse(pedidoAprovado, true,
-                    "Pedido aprovado com sucesso! Número: " + pedidoAprovado.getId());
+                    "Pedido aprovado com sucesso! Número: " + pedidoAprovado.getId(), List.of());
 
         } catch (RuntimeException e) {
-            return new PedidoResponse(null, false, e.getMessage());
+            return new PedidoResponse(null, false, e.getMessage(), List.of());
         }
     }
 
-    /**
-     * Valida se a lista de itens não é nula ou vazia
-     */
     private boolean validarDadosEntrada(List<ItemPedidoRequest> itensSolicitados) {
         return itensSolicitados != null && !itensSolicitados.isEmpty();
     }
 
-    /**
-     * Valida quantidade de cada item
-     */
     private String validarItens(List<ItemPedidoRequest> itensSolicitados) {
         for (ItemPedidoRequest itemRequest : itensSolicitados) {
             if (itemRequest.getQuantidade() <= 0) {
@@ -98,9 +89,6 @@ public class SubmeterPedidoUC {
         return null;
     }
 
-    /**
-     * Converte requests da aplicação em solicitações de domínio
-     */
     private List<SolicitacaoItem> converterParaSolicitacoes(List<ItemPedidoRequest> itensSolicitados) {
         List<SolicitacaoItem> solicitacoes = new ArrayList<>();
         for (ItemPedidoRequest itemRequest : itensSolicitados) {

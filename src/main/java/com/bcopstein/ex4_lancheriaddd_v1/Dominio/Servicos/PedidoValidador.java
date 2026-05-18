@@ -10,10 +10,6 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.ItemPedido;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Produto;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.SolicitacaoItem;
 
-/**
- * Serviço de domínio responsável pela validação de pedidos.
- * Encapsula todas as regras de validação em um único lugar.
- */
 @Service
 public class PedidoValidador {
 
@@ -31,9 +27,6 @@ public class PedidoValidador {
         this.estoqueService = estoqueService;
     }
 
-    /**
-     * Valida se o cliente existe
-     */
     public Cliente validarCliente(String clienteCpf) {
         Cliente cliente = clienteRepository.recuperarPorCpf(clienteCpf);
         if (cliente == null) {
@@ -42,9 +35,6 @@ public class PedidoValidador {
         return cliente;
     }
 
-    /**
-     * Valida e converte as solicitações de itens em itens de pedido
-     */
     public List<ItemPedido> validarEConverterItens(List<SolicitacaoItem> itensSolicitados) {
         List<ItemPedido> itens = new java.util.ArrayList<>();
         
@@ -59,13 +49,7 @@ public class PedidoValidador {
         return itens;
     }
 
-    /**
-     * Valida se há estoque suficiente para todos os itens
-     */
-    public void validarEstoque(List<ItemPedido> itens) {
-        if (!estoqueService.verificarEstoque(itens)) {
-            throw new RuntimeException(
-                "Estoque insuficiente: um ou mais ingredientes não estão disponíveis");
-        }
+    public List<ItemPedido> verificarEstoque(List<ItemPedido> itens) {
+        return estoqueService.verificarEstoque(itens);
     }
 }

@@ -9,10 +9,6 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.ItemPedido;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.PedidoCalculador.ValorPedidoDto;
 
-/**
- * Serviço de domínio responsável pela criação e persistência de pedidos.
- * Delega validações e cálculos para serviços especializados (PedidoValidador e PedidoCalculador).
- */
 @Service
 public class PedidoService {
 
@@ -23,23 +19,14 @@ public class PedidoService {
         this.pedidoRepository = pedidoRepository;
     }
 
-    /**
-     * Cria um pedido aprovado com base no cliente, itens e valores calculados.
-     * Responsabilidade única: criar e persistir a entidade Pedido.
-     */
-    public Pedido criarPedidoAprovado(Cliente cliente, List<ItemPedido> itens, ValorPedidoDto valores) {
-        Pedido pedidoAprovado = new Pedido(
-                0,
-                cliente,
-                null,
-                itens,
-                Pedido.Status.APROVADO,
-                valores.subtotal,
-                valores.impostos,
-                valores.desconto,
-                valores.valorCobrado
+    public Pedido criarEAprovarPedido(Cliente cliente, String enderecoEntrega,
+                                      List<ItemPedido> itens, ValorPedidoDto valores) {
+        Pedido pedido = new Pedido(
+                0, cliente, enderecoEntrega, null,
+                itens, Pedido.Status.NOVO,
+                0, 0, 0, 0
         );
-
-        return pedidoRepository.salvar(pedidoAprovado);
+        pedido.aprovar(valores.subtotal, valores.impostos, valores.desconto, valores.valorCobrado);
+        return pedidoRepository.salvar(pedido);
     }
 }

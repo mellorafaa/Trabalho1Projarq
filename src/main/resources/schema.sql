@@ -68,12 +68,13 @@ create table if not exists pedidos (
     id          bigint auto_increment primary key,
     cliente_cpf varchar(15)        not null,
     status      varchar(30)        not null,
-    valor       double             default 0,   
-    impostos    double             default 0,   
-    desconto    double             default 0,   
-    valor_cobrado double           default 0,   
-    data_criacao  timestamp        default current_timestamp,  
-    data_hora_pagamento timestamp  default null, 
+    valor       double             default 0,
+    impostos    double             default 0,
+    desconto    double             default 0,
+    valor_cobrado double           default 0,
+    data_criacao  timestamp        default current_timestamp,
+    data_hora_pagamento timestamp  default null,
+    endereco_entrega varchar(255)  not null default '',
     foreign key (cliente_cpf) references clientes(cpf)
 );
 

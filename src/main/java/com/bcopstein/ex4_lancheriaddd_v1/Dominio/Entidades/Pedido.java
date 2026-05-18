@@ -14,8 +14,10 @@ public class Pedido {
         TRANSPORTE,
         ENTREGUE
     }
+
     private long id;
     private Cliente cliente;
+    private String enderecoEntrega;
     private LocalDateTime dataHoraPagamento;
     private List<ItemPedido> itens;
     private Status status;
@@ -24,10 +26,12 @@ public class Pedido {
     private double desconto;
     private double valorCobrado;
 
-    public Pedido(long id, Cliente cliente, LocalDateTime dataHoraPagamento, List<ItemPedido> itens,
-            Pedido.Status status, double valor, double impostos, double desconto, double valorCobrado) {
+    public Pedido(long id, Cliente cliente, String enderecoEntrega, LocalDateTime dataHoraPagamento,
+                  List<ItemPedido> itens, Status status, double valor, double impostos,
+                  double desconto, double valorCobrado) {
         this.id = id;
         this.cliente = cliente;
+        this.enderecoEntrega = enderecoEntrega;
         this.dataHoraPagamento = dataHoraPagamento;
         this.itens = itens;
         this.status = status;
@@ -37,43 +41,23 @@ public class Pedido {
         this.valorCobrado = valorCobrado;
     }
 
-    public long getId() {
-        return id;
+    public void aprovar(double valor, double impostos, double desconto, double valorCobrado) {
+        this.status = Status.APROVADO;
+        this.valor = valor;
+        this.impostos = impostos;
+        this.desconto = desconto;
+        this.valorCobrado = valorCobrado;
     }
 
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public LocalDateTime getDataHoraPagamento() {
-        return dataHoraPagamento;
-    }
-
-    public List<ItemPedido> getItens() {
-        return itens;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status){
-        this.status = status;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-
-    public double getImpostos() {
-        return impostos;
-    }
-
-    public double getDesconto() {
-        return desconto;
-    }
-
-    public double getValorCobrado() {
-        return valorCobrado;
-    }
+    public long getId()                         { return id; }
+    public Cliente getCliente()                 { return cliente; }
+    public String getEnderecoEntrega()          { return enderecoEntrega; }
+    public LocalDateTime getDataHoraPagamento() { return dataHoraPagamento; }
+    public List<ItemPedido> getItens()          { return itens; }
+    public Status getStatus()                   { return status; }
+    public void setStatus(Status status)        { this.status = status; }
+    public double getValor()                    { return valor; }
+    public double getImpostos()                 { return impostos; }
+    public double getDesconto()                 { return desconto; }
+    public double getValorCobrado()             { return valorCobrado; }
 }
