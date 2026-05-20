@@ -5,5 +5,5 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.ItemPedido;
 
 public interface IEstoqueService {
 
-    boolean verificarEstoque(List<ItemPedido> itens);
+    List<ItemPedido> verificarEstoque(List<ItemPedido> itens);
 }
