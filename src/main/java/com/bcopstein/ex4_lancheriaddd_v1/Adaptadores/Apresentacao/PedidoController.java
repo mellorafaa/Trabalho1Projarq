@@ -38,7 +38,7 @@ public class PedidoController {
     public ResponseEntity<List<PedidoPresenter>> listarPedidos() {
         List<Pedido> pedidos = listarPedidosUC.run();
         List<PedidoPresenter> presenters = pedidos.stream()
-                .map(p -> montarPresenter(new PedidoResponse(p, true, "OK")))
+                .map(p -> montarPresenter(new PedidoResponse(p, true, "OK", List.of())))
                 .toList();
         return ResponseEntity.ok(presenters);
     }
@@ -60,10 +60,12 @@ public class PedidoController {
                             0,
                             false,
                             "Pedido não encontrado",
+                            "",
+                            List.of(),
                             List.of()));
         }
 
-        return ResponseEntity.ok(montarPresenter(new PedidoResponse(pedido, true, "OK")));
+        return ResponseEntity.ok(montarPresenter(new PedidoResponse(pedido, true, "OK", List.of())));
     }
 
     @PostMapping
@@ -73,7 +75,9 @@ public class PedidoController {
 
         PedidoResponse response = submeterPedidoUC.run(
                 request.getClienteCpf(),
-                request.getItens());
+                request.getEnderecoEntrega(),
+                request.getItens()
+        );
 
         PedidoPresenter presenter = montarPresenter(response);
 
@@ -85,11 +89,22 @@ public class PedidoController {
     }
 
     private PedidoPresenter montarPresenter(PedidoResponse response) {
+        List<PedidoPresenter.ItemPedidoPresenter> indisponiveis =
+                response.getItensIndisponiveis().stream()
+                        .map(item -> new PedidoPresenter.ItemPedidoPresenter(
+                                item.getItem().getId(),
+                                item.getItem().getDescricao(),
+                                item.getItem().getPreco(),
+                                item.getQuantidade()
+                        ))
+                        .collect(Collectors.toList());
 
         if (!response.isAprovado() || response.getPedido() == null) {
             return new PedidoPresenter(
                     0, "NEGADO", 0, 0, 0, 0,
-                    false, response.getMensagem(), List.of());
+                    false, response.getMensagem(), "",
+                    List.of(), indisponiveis
+            );
         }
 
         List<PedidoPresenter.ItemPedidoPresenter> itensPresenter = response.getPedido().getItens().stream()
@@ -109,6 +124,9 @@ public class PedidoController {
                 response.getPedido().getValorCobrado(),
                 response.isAprovado(),
                 response.getMensagem(),
-                itensPresenter);
+                response.getPedido().getEnderecoEntrega(),
+                itensPresenter,
+                List.of()
+        );
     }
 }
