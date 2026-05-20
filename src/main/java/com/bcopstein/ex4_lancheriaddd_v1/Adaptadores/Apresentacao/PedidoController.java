@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoStatusPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.ListarPedidosUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Requests.PedidoSubmissaoRequest;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.PedidoResponse;
@@ -45,27 +46,15 @@ public class PedidoController {
 
     @GetMapping("/{id}")
     @CrossOrigin("*")
-    public ResponseEntity<PedidoPresenter> recuperarStatusPedido(
+    public ResponseEntity<PedidoStatusPresenter> recuperarStatusPedido(
             @org.springframework.web.bind.annotation.PathVariable long id) {
 
         Pedido pedido = solicitarStatusPedidoUC.run(id);
         if (pedido == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new PedidoPresenter(
-                            0,
-                            "NAO_ENCONTRADO",
-                            0,
-                            0,
-                            0,
-                            0,
-                            false,
-                            "Pedido não encontrado",
-                            "",
-                            List.of(),
-                            List.of()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.ok(montarPresenter(new PedidoResponse(pedido, true, "OK", List.of())));
+        return ResponseEntity.ok(new PedidoStatusPresenter(pedido.getId(), pedido.getStatus().name()));
     }
 
     @PostMapping
