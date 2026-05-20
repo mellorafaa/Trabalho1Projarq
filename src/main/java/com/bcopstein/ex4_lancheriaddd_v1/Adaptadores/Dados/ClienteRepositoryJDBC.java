@@ -60,6 +60,23 @@ public class ClienteRepositoryJDBC implements ClienteRepository {
     }
 
     @Override
+    public List<Cliente> recuperarTodos() {
+        String sql = "SELECT cpf, nome, celular, endereco, email, senha FROM clientes";
+
+        return jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> new Cliente(
+                        rs.getString("cpf"),
+                        rs.getString("nome"),
+                        rs.getString("celular"),
+                        rs.getString("endereco"),
+                        rs.getString("email"),
+                        rs.getString("senha")
+                )
+        );
+    }
+
+    @Override
     public Cliente salvar(Cliente cliente) {
         String sql = "INSERT INTO clientes (cpf, nome, celular, endereco, email, senha) VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(

@@ -1,5 +1,6 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +50,9 @@ public class ClienteService {
         }
 
         return clienteRepository.salvar(cliente);
+    }
+
+    public List<Cliente> listarClientes() {
+        return clienteRepository.recuperarTodos();
     }
 }
