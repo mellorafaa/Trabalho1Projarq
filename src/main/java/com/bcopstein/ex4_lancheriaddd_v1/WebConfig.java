@@ -6,10 +6,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Seguranca.JWTFilter;
 
-/**
- * Configuração do Spring MVC para registrar interceptadores
- * Responsável por aplicar o JWTFilter a todas as requisições
- */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     
@@ -24,6 +20,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtFilter)
             .addPathPatterns("/**")
-            .excludePathPatterns("/autenticacao/login", "/h2/**", "/health");
+            .excludePathPatterns("/autenticacao/login", "/h2/**", "/health", "/clientes");
     }
 }
