@@ -6,14 +6,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoStatusPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.CancelarPedidoUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.ListarPedidosUC;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.PagarPedidoUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Requests.PedidoSubmissaoRequest;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.CancelarPedidoResponse;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.PagarPedidoResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.PedidoResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.SolicitarStatusPedidoUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.SubmeterPedidoUC;
@@ -26,12 +31,19 @@ public class PedidoController {
     private final SubmeterPedidoUC submeterPedidoUC;
     private final ListarPedidosUC listarPedidosUC;
     private final SolicitarStatusPedidoUC solicitarStatusPedidoUC;
+    private final CancelarPedidoUC cancelarPedidoUC;
+    private final PagarPedidoUC pagarPedidoUC;
 
-    public PedidoController(SubmeterPedidoUC submeterPedidoUC, ListarPedidosUC listarPedidosUC,
-            SolicitarStatusPedidoUC solicitarStatusPedidoUC) {
+    public PedidoController(SubmeterPedidoUC submeterPedidoUC,
+                            ListarPedidosUC listarPedidosUC,
+                            SolicitarStatusPedidoUC solicitarStatusPedidoUC,
+                            CancelarPedidoUC cancelarPedidoUC,
+                            PagarPedidoUC pagarPedidoUC) {
         this.submeterPedidoUC = submeterPedidoUC;
         this.listarPedidosUC = listarPedidosUC;
         this.solicitarStatusPedidoUC = solicitarStatusPedidoUC;
+        this.cancelarPedidoUC = cancelarPedidoUC;
+        this.pagarPedidoUC = pagarPedidoUC;
     }
 
     @GetMapping
@@ -46,22 +58,17 @@ public class PedidoController {
 
     @GetMapping("/{id}")
     @CrossOrigin("*")
-    public ResponseEntity<PedidoStatusPresenter> recuperarStatusPedido(
-            @org.springframework.web.bind.annotation.PathVariable long id) {
-
+    public ResponseEntity<PedidoStatusPresenter> recuperarStatusPedido(@PathVariable long id) {
         Pedido pedido = solicitarStatusPedidoUC.run(id);
         if (pedido == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
         return ResponseEntity.ok(new PedidoStatusPresenter(pedido.getId(), pedido.getStatus().name()));
     }
 
     @PostMapping
     @CrossOrigin("*")
-    public ResponseEntity<PedidoPresenter> submeterPedido(
-            @RequestBody PedidoSubmissaoRequest request) {
-
+    public ResponseEntity<PedidoPresenter> submeterPedido(@RequestBody PedidoSubmissaoRequest request) {
         PedidoResponse response = submeterPedidoUC.run(
                 request.getClienteCpf(),
                 request.getEnderecoEntrega(),
@@ -75,6 +82,28 @@ public class PedidoController {
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(presenter);
         }
+    }
+
+    @PostMapping("/{id}/cancelar")
+    @CrossOrigin("*")
+    public ResponseEntity<CancelarPedidoResponse> cancelarPedido(@PathVariable long id) {
+        CancelarPedidoResponse response = cancelarPedidoUC.run(id);
+
+        if (response.isCancelado()) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
+    }
+
+    @PostMapping("/{id}/pagar")
+    @CrossOrigin("*")
+    public ResponseEntity<PagarPedidoResponse> pagarPedido(@PathVariable long id) {
+        PagarPedidoResponse response = pagarPedidoUC.run(id);
+
+        if (response.isPago()) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
     }
 
     private PedidoPresenter montarPresenter(PedidoResponse response) {
