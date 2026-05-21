@@ -7,6 +7,17 @@ create table if not exists clientes(
   senha varchar(255) not null
 );
 
+-- Tabela de Usuários para autenticação
+create table if not exists usuarios (
+  id varchar(36) primary key,
+  email varchar(255) not null unique,
+  senha_hash varchar(255) not null,
+  nome varchar(100) not null,
+  role varchar(50) not null default 'USER',
+  ativo int not null default 1,
+  data_criacao timestamp default current_timestamp
+);
+
 create table if not exists ingredientes (
   id bigint primary key,
   descricao varchar(255) not null

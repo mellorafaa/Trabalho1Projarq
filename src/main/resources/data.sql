@@ -1,3 +1,8 @@
+-- Inserção dos usuários de teste (senha: 123456)
+-- Hash: $2a$10$2ZZ/5WAG0SunSMQC31bF1OttuQvuE26BqWncZ.vzmWkZSPUenqb1u (BCrypt de "123456")
+INSERT INTO usuarios (id, email, senha_hash, nome, role, ativo) VALUES ('550e8400-e29b-41d4-a716-446655440000', 'admin@lancheria.com', '$2a$10$2ZZ/5WAG0SunSMQC31bF1OttuQvuE26BqWncZ.vzmWkZSPUenqb1u', 'Administrador', 'ADMIN', 1);
+INSERT INTO usuarios (id, email, senha_hash, nome, role, ativo) VALUES ('550e8400-e29b-41d4-a716-446655440001', 'user@lancheria.com', '$2a$10$2ZZ/5WAG0SunSMQC31bF1OttuQvuE26BqWncZ.vzmWkZSPUenqb1u', 'Usuário Padrão', 'USER', 1);
+
 -- Inserção dos clientes
 INSERT INTO clientes (cpf, nome, celular, endereco, email, senha) VALUES ('9001', 'Huguinho Pato', '51985744566', 'Rua das Flores, 100', 'huguinho.pato@email.com', 'senha123');
 INSERT INTO clientes (cpf, nome, celular, endereco, email, senha) VALUES ('9002', 'Luizinho Pato', '5199172079', 'Av. Central, 200', 'zezinho.pato@email.com', 'senha123');
