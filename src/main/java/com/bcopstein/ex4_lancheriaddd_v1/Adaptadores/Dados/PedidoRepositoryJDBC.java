@@ -229,6 +229,52 @@ public class PedidoRepositoryJDBC implements PedidoRepository {
     }
 
     @Override
+    public List<Pedido> listarEntreguesEntreDatasParaCliente(String cpf, LocalDate inicio, LocalDate fim) {
+        String sql =
+            "SELECT id, cliente_cpf, status, valor, impostos, desconto, " +
+            "       valor_cobrado, data_hora_pagamento, endereco_entrega " +
+            "FROM pedidos " +
+            "WHERE status = 'ENTREGUE' " +
+            "  AND cliente_cpf = ? " +
+            "  AND CAST(data_criacao AS DATE) BETWEEN ? AND ?";
+
+        List<Pedido> pedidosParciais = jdbcTemplate.query(sql, ps -> {
+            ps.setString(1, cpf);
+            ps.setDate(2, Date.valueOf(inicio));
+            ps.setDate(3, Date.valueOf(fim));
+        }, (rs, rowNum) -> {
+            Cliente cliente = clienteRepository.recuperarPorCpf(rs.getString("cliente_cpf"));
+            Pedido.Status status = Pedido.Status.valueOf(rs.getString("status"));
+            LocalDateTime dataHoraPagamento = null;
+            Timestamp ts = rs.getTimestamp("data_hora_pagamento");
+            if (ts != null) dataHoraPagamento = ts.toLocalDateTime();
+            return new Pedido(
+                    rs.getLong("id"),
+                    cliente,
+                    rs.getString("endereco_entrega"),
+                    dataHoraPagamento,
+                    new ArrayList<>(),
+                    status,
+                    rs.getDouble("valor"),
+                    rs.getDouble("impostos"),
+                    rs.getDouble("desconto"),
+                    rs.getDouble("valor_cobrado")
+            );
+        });
+
+        List<Pedido> pedidosCompletos = new ArrayList<>();
+        for (Pedido p : pedidosParciais) {
+            List<ItemPedido> itens = recuperarItensDoPedido(p.getId());
+            pedidosCompletos.add(new Pedido(
+                    p.getId(), p.getCliente(), p.getEnderecoEntrega(),
+                    p.getDataHoraPagamento(), itens, p.getStatus(),
+                    p.getValor(), p.getImpostos(), p.getDesconto(), p.getValorCobrado()
+            ));
+        }
+        return pedidosCompletos;
+    }
+
+    @Override
     public long contarPedidosRecentesPorCliente(String clienteCpf, LocalDateTime desde) {
         String sql =
             "SELECT COUNT(*) FROM pedidos " +

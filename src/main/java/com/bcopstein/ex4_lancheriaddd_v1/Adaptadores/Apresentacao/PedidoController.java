@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoStatusPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.CancelarPedidoUC;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.ListarPedidosClienteEntreguesUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.ListarPedidosEntreguesUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.ListarPedidosUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.PagarPedidoUC;
@@ -38,19 +39,35 @@ public class PedidoController {
     private final CancelarPedidoUC cancelarPedidoUC;
     private final PagarPedidoUC pagarPedidoUC;
     private final ListarPedidosEntreguesUC listarPedidosEntreguesUC;
+    private final ListarPedidosClienteEntreguesUC listarPedidosClienteEntreguesUC;
 
     public PedidoController(SubmeterPedidoUC submeterPedidoUC,
                             ListarPedidosUC listarPedidosUC,
                             SolicitarStatusPedidoUC solicitarStatusPedidoUC,
                             CancelarPedidoUC cancelarPedidoUC,
                             PagarPedidoUC pagarPedidoUC,
-                            ListarPedidosEntreguesUC listarPedidosEntreguesUC) {
+                            ListarPedidosEntreguesUC listarPedidosEntreguesUC,
+                            ListarPedidosClienteEntreguesUC listarPedidosClienteEntreguesUC) {
         this.submeterPedidoUC = submeterPedidoUC;
         this.listarPedidosUC = listarPedidosUC;
         this.solicitarStatusPedidoUC = solicitarStatusPedidoUC;
         this.cancelarPedidoUC = cancelarPedidoUC;
         this.pagarPedidoUC = pagarPedidoUC;
         this.listarPedidosEntreguesUC = listarPedidosEntreguesUC;
+        this.listarPedidosClienteEntreguesUC = listarPedidosClienteEntreguesUC;
+    }
+
+    @GetMapping("/cliente/{cpf}/entregues")
+    @CrossOrigin("*")
+    public ResponseEntity<List<PedidoPresenter>> listarPedidosClienteEntregues(
+            @PathVariable String cpf,
+            @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam("fim") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
+        List<Pedido> pedidos = listarPedidosClienteEntreguesUC.run(cpf, inicio, fim);
+        List<PedidoPresenter> presenters = pedidos.stream()
+                .map(p -> montarPresenter(new PedidoResponse(p, true, "OK", List.of())))
+                .toList();
+        return ResponseEntity.ok(presenters);
     }
 
     @GetMapping("/entregues")

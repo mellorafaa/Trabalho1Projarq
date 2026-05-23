@@ -15,6 +15,8 @@ public interface PedidoRepository {
 
     List<Pedido> listarEntreguesEntreDatas(LocalDate inicio, LocalDate fim);
 
+    List<Pedido> listarEntreguesEntreDatasParaCliente(String cpf, LocalDate inicio, LocalDate fim);
+
     long contarPedidosRecentesPorCliente(String clienteCpf, LocalDateTime desde);
 
     void atualizarStatus(long id, Pedido.Status novoStatus);
