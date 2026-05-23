@@ -1,7 +1,9 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,10 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Presenters.PedidoStatusPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.CancelarPedidoUC;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.ListarPedidosEntreguesUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.ListarPedidosUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.PagarPedidoUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Requests.PedidoSubmissaoRequest;
@@ -33,17 +37,32 @@ public class PedidoController {
     private final SolicitarStatusPedidoUC solicitarStatusPedidoUC;
     private final CancelarPedidoUC cancelarPedidoUC;
     private final PagarPedidoUC pagarPedidoUC;
+    private final ListarPedidosEntreguesUC listarPedidosEntreguesUC;
 
     public PedidoController(SubmeterPedidoUC submeterPedidoUC,
                             ListarPedidosUC listarPedidosUC,
                             SolicitarStatusPedidoUC solicitarStatusPedidoUC,
                             CancelarPedidoUC cancelarPedidoUC,
-                            PagarPedidoUC pagarPedidoUC) {
+                            PagarPedidoUC pagarPedidoUC,
+                            ListarPedidosEntreguesUC listarPedidosEntreguesUC) {
         this.submeterPedidoUC = submeterPedidoUC;
         this.listarPedidosUC = listarPedidosUC;
         this.solicitarStatusPedidoUC = solicitarStatusPedidoUC;
         this.cancelarPedidoUC = cancelarPedidoUC;
         this.pagarPedidoUC = pagarPedidoUC;
+        this.listarPedidosEntreguesUC = listarPedidosEntreguesUC;
+    }
+
+    @GetMapping("/entregues")
+    @CrossOrigin("*")
+    public ResponseEntity<List<PedidoPresenter>> listarPedidosEntregues(
+            @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam("fim") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
+        List<Pedido> pedidos = listarPedidosEntreguesUC.run(inicio, fim);
+        List<PedidoPresenter> presenters = pedidos.stream()
+                .map(p -> montarPresenter(new PedidoResponse(p, true, "OK", List.of())))
+                .toList();
+        return ResponseEntity.ok(presenters);
     }
 
     @GetMapping

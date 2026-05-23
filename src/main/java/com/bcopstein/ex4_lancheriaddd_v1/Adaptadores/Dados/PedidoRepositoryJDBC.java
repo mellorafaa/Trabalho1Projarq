@@ -1,8 +1,10 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Dados;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,6 +158,50 @@ public class PedidoRepositoryJDBC implements PedidoRepository {
             Timestamp ts = rs.getTimestamp("data_hora_pagamento");
             if (ts != null) dataHoraPagamento = ts.toLocalDateTime();
 
+            return new Pedido(
+                    rs.getLong("id"),
+                    cliente,
+                    rs.getString("endereco_entrega"),
+                    dataHoraPagamento,
+                    new ArrayList<>(),
+                    status,
+                    rs.getDouble("valor"),
+                    rs.getDouble("impostos"),
+                    rs.getDouble("desconto"),
+                    rs.getDouble("valor_cobrado")
+            );
+        });
+
+        List<Pedido> pedidosCompletos = new ArrayList<>();
+        for (Pedido p : pedidosParciais) {
+            List<ItemPedido> itens = recuperarItensDoPedido(p.getId());
+            pedidosCompletos.add(new Pedido(
+                    p.getId(), p.getCliente(), p.getEnderecoEntrega(),
+                    p.getDataHoraPagamento(), itens, p.getStatus(),
+                    p.getValor(), p.getImpostos(), p.getDesconto(), p.getValorCobrado()
+            ));
+        }
+        return pedidosCompletos;
+    }
+
+    @Override
+    public List<Pedido> listarEntreguesEntreDatas(LocalDate inicio, LocalDate fim) {
+        String sql =
+            "SELECT id, cliente_cpf, status, valor, impostos, desconto, " +
+            "       valor_cobrado, data_hora_pagamento, endereco_entrega " +
+            "FROM pedidos " +
+            "WHERE status = 'ENTREGUE' " +
+            "  AND CAST(data_criacao AS DATE) BETWEEN ? AND ?";
+
+        List<Pedido> pedidosParciais = jdbcTemplate.query(sql, ps -> {
+            ps.setDate(1, Date.valueOf(inicio));
+            ps.setDate(2, Date.valueOf(fim));
+        }, (rs, rowNum) -> {
+            Cliente cliente = clienteRepository.recuperarPorCpf(rs.getString("cliente_cpf"));
+            Pedido.Status status = Pedido.Status.valueOf(rs.getString("status"));
+            LocalDateTime dataHoraPagamento = null;
+            Timestamp ts = rs.getTimestamp("data_hora_pagamento");
+            if (ts != null) dataHoraPagamento = ts.toLocalDateTime();
             return new Pedido(
                     rs.getLong("id"),
                     cliente,
