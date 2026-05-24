@@ -25,7 +25,7 @@ public class DescontoService implements IDescontoService {
 
         long pedidosPagos = pedidoRepository.contarPedidosPagosPorCliente(clienteCpf, vinteDiasAtras);
 
-        if (pedidosPagos > MINIMO_PEDIDOS_PARA_DESCONTO) {
+        if (pedidosPagos >= MINIMO_PEDIDOS_PARA_DESCONTO) {
             return subtotal * TAXA_DESCONTO;
         }
 
