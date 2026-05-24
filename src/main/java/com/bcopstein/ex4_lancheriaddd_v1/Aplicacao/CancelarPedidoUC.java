@@ -1,6 +1,5 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Aplicacao;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.CancelarPedidoResponse;
@@ -12,7 +11,6 @@ public class CancelarPedidoUC {
 
     private final PedidoRepository pedidoRepository;
 
-    @Autowired
     public CancelarPedidoUC(PedidoRepository pedidoRepository) {
         this.pedidoRepository = pedidoRepository;
     }
@@ -36,7 +34,8 @@ public class CancelarPedidoUC {
             );
         }
 
-        pedidoRepository.atualizarStatus(idPedido, Pedido.Status.CANCELADO);
+        pedido.cancelar();
+        pedidoRepository.atualizarStatus(pedido.getId(), pedido.getStatus());
 
         return new CancelarPedidoResponse(
             true,

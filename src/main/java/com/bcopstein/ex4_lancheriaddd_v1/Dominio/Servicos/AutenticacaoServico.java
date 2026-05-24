@@ -43,13 +43,4 @@ public class AutenticacaoServico {
         return usuario;
     }
     
-    public Usuario recuperarUsuario(String id) {
-        Usuario usuario = usuarioRepository.recuperarPorId(id);
-        
-        if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não encontrado");
-        }
-        
-        return usuario;
-    }
 }

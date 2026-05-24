@@ -1,6 +1,5 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Aplicacao;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Requests.RegistrarClienteRequest;
@@ -18,7 +17,6 @@ public class RegistrarClienteUC {
     private final UsuarioRepository usuarioRepository;
     private final CriptografiaSenhaServico criptografiaSenhaServico;
 
-    @Autowired
     public RegistrarClienteUC(ClienteService clienteService,
                                UsuarioRepository usuarioRepository,
                                CriptografiaSenhaServico criptografiaSenhaServico) {
@@ -33,18 +31,19 @@ public class RegistrarClienteUC {
         }
 
         try {
+            String senhaHash = criptografiaSenhaServico.criptografar(request.getSenha());
+
             Cliente cliente = new Cliente(
                 request.getCpf(),
                 request.getNome(),
                 request.getCelular(),
                 request.getEndereco(),
                 request.getEmail(),
-                request.getSenha()
+                senhaHash
             );
 
             clienteService.cadastrarCliente(cliente);
 
-            String senhaHash = criptografiaSenhaServico.criptografar(request.getSenha());
             Usuario usuario = new Usuario(request.getEmail(), senhaHash, request.getNome(), "USER");
             usuarioRepository.salvar(usuario);
 

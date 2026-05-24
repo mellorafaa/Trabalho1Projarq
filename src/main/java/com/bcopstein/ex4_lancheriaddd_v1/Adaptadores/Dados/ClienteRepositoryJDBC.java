@@ -2,7 +2,6 @@ package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Dados;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,6 @@ public class ClienteRepositoryJDBC implements ClienteRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public ClienteRepositoryJDBC(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -86,7 +84,7 @@ public class ClienteRepositoryJDBC implements ClienteRepository {
                 cliente.getCelular(),
                 cliente.getEndereco(),
                 cliente.getEmail(),
-                cliente.getSenha()
+                cliente.getSenhaHash()
         );
         return cliente;
     }

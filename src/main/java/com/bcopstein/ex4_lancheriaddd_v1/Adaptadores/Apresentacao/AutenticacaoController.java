@@ -26,17 +26,13 @@ public class AutenticacaoController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            // Validar entrada
             if (loginRequest == null || loginRequest.getEmail() == null || loginRequest.getSenha() == null) {
                 return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("{\"erro\": \"Email e senha são obrigatórios\"}");
             }
-            
-            // Executar use case
+
             TokenResponse tokenResponse = fazerLoginUC.executar(loginRequest);
-            
-            // Converter para presenter
             TokenPresenter presenter = new TokenPresenter(tokenResponse);
             
             return ResponseEntity.ok(presenter);

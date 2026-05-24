@@ -3,7 +3,6 @@ package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Dados;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +13,11 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Cardapio;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Produto;
 
 @Component
-public class CardapioRepositoryJDBC implements CardapioRepository{
-    private JdbcTemplate jdbcTemplate;
-    private ProdutosRepository produtosRepository;
+public class CardapioRepositoryJDBC implements CardapioRepository {
+    private final JdbcTemplate jdbcTemplate;
+    private final ProdutosRepository produtosRepository;
 
-    @Autowired
-    public CardapioRepositoryJDBC(JdbcTemplate jdbcTemplate,ProdutosRepository  produtosRepository){
+    public CardapioRepositoryJDBC(JdbcTemplate jdbcTemplate, ProdutosRepository produtosRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.produtosRepository = produtosRepository;
     }
@@ -44,7 +42,7 @@ public class CardapioRepositoryJDBC implements CardapioRepository{
     @Override
     // Por enquanto retorna sempre a pizza de queijo e presunto como indicação do "chef"
     public List<Produto> indicacoesDoChef() {
-        return List.of(produtosRepository.recuperaProdutoPorid(2L));   
+        return List.of(produtosRepository.recuperaProdutoPorId(2L));   
     }
 
     @Override

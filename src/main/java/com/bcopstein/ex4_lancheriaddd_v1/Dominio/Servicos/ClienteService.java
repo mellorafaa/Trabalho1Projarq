@@ -1,7 +1,6 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.ClienteRepository;
@@ -12,7 +11,6 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
-    @Autowired
     public ClienteService(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
     }
@@ -37,7 +35,7 @@ public class ClienteService {
         if (cliente.getEmail() == null || cliente.getEmail().isBlank()) {
             throw new RuntimeException("Email é obrigatório.");
         }
-        if (cliente.getSenha() == null || cliente.getSenha().isBlank()) {
+        if (cliente.getSenhaHash() == null || cliente.getSenhaHash().isBlank()) {
             throw new RuntimeException("Senha é obrigatória.");
         }
 

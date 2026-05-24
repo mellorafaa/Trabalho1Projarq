@@ -1,25 +1,25 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Aplicacao;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.PedidoResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.PedidoRepository;
-import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido;
 
 @Component
 public class ListarPedidosClienteUC {
 
     private final PedidoRepository pedidoRepository;
 
-    @Autowired
     public ListarPedidosClienteUC(PedidoRepository pedidoRepository) {
         this.pedidoRepository = pedidoRepository;
     }
 
-    public List<Pedido> run(String clienteCpf) {
+    public List<PedidoResponse> run(String clienteCpf) {
         if (clienteCpf == null || clienteCpf.isBlank()) {
             throw new IllegalArgumentException("CPF do cliente não pode estar vazio");
         }
-        return pedidoRepository.listarPorClienteCpf(clienteCpf);
+        return pedidoRepository.listarPorClienteCpf(clienteCpf).stream()
+                .map(p -> new PedidoResponse(p, true, "OK", List.of()))
+                .toList();
     }
 }

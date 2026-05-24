@@ -1,20 +1,16 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Seguranca;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.IGeradorToken;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Usuario;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-/**
- * Adaptador para geração e validação de tokens JWT
- * Implementa a porta de segurança do hexágono
- */
 @Component
-public class GeradorTokenJWT {
+public class GeradorTokenJWT implements IGeradorToken {
     
     @Value("${jwt.secret:mySecretKeyThatIsVeryLongAndSecureForTokenGeneration12345678901234567890}")
     private String jwtSecret;
@@ -33,7 +29,7 @@ public class GeradorTokenJWT {
             .claim("role", usuario.getRole())
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-            .signWith(key, SignatureAlgorithm.HS512)
+            .signWith(key, Jwts.SIG.HS512)
             .compact();
     }
     

@@ -2,7 +2,6 @@ package com.bcopstein.ex4_lancheriaddd_v1.Aplicacao;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Requests.ItemPedidoRequest;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.PedidoResponse;
@@ -22,7 +21,6 @@ public class SubmeterPedidoUC {
     private final PedidoCalculador pedidoCalculador;
     private final PedidoService pedidoService;
 
-    @Autowired
     public SubmeterPedidoUC(
             PedidoValidador pedidoValidador,
             PedidoCalculador pedidoCalculador,

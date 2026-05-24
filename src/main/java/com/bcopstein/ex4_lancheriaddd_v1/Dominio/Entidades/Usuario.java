@@ -2,12 +2,12 @@ package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades;
 
 public class Usuario {
 
-    private String id;
-    private String email;
-    private String senhaHash;
-    private String nome;
-    private String role;
-    private boolean ativo;
+    private final String id;
+    private final String email;
+    private final String senhaHash;
+    private final String nome;
+    private final String role;
+    private final boolean ativo;
 
     public Usuario(String id, String email, String senhaHash, String nome, String role, boolean ativo) {
         this.id = id;
@@ -18,47 +18,15 @@ public class Usuario {
         this.ativo = ativo;
     }
 
-    // Construtor para criação de novo usuário
     public Usuario(String email, String senhaHash, String nome, String role) {
-        this.id = null;
-        this.email = email;
-        this.senhaHash = senhaHash;
-        this.nome = nome;
-        this.role = role;
-        this.ativo = true;
+        this(null, email, senhaHash, nome, role, true);
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getSenhaHash() {
-        return senhaHash;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    // Validações de domínio
-    public boolean senhaCorresponde(String senhaCandidato, String senhaHashArmazenada) {
-        return senhaCandidato != null && senhaHashArmazenada != null
-                && senhaCandidato.equals(senhaHashArmazenada);
-    }
-
-    public boolean estaAtivo() {
-        return this.ativo;
-    }
+    public String getId()        { return id; }
+    public String getEmail()     { return email; }
+    public String getSenhaHash() { return senhaHash; }
+    public String getNome()      { return nome; }
+    public String getRole()      { return role; }
+    public boolean isAtivo()     { return ativo; }
+    public boolean estaAtivo()   { return ativo; }
 }

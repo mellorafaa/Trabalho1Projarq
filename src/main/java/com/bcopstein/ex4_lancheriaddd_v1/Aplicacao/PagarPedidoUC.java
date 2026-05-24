@@ -2,7 +2,6 @@ package com.bcopstein.ex4_lancheriaddd_v1.Aplicacao;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.PagarPedidoResponse;
@@ -18,7 +17,6 @@ public class PagarPedidoUC {
     private final IPagamentoService pagamentoService;
     private final ICozinhaService cozinhaService;
 
-    @Autowired
     public PagarPedidoUC(PedidoRepository pedidoRepository,
                          IPagamentoService pagamentoService,
                          ICozinhaService cozinhaService) {
@@ -58,8 +56,8 @@ public class PagarPedidoUC {
             );
         }
 
+        pedido.pagar();
         pedidoRepository.registrarPagamento(idPedido, LocalDateTime.now());
-        pedido.setStatus(Pedido.Status.PAGO);
 
         cozinhaService.chegadaDePedido(pedido);
 

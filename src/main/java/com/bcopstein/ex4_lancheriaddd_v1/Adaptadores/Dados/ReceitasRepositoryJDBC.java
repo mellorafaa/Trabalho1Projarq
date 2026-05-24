@@ -2,7 +2,6 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Dados;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Ingrediente;
@@ -12,14 +11,13 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.ReceitasRepository;
 
 @Repository
 public class ReceitasRepositoryJDBC implements ReceitasRepository {
-	private JdbcTemplate jdbcTemplate;
-    private IngredientesRepository ingredientesRepository;
+    private final JdbcTemplate jdbcTemplate;
+    private final IngredientesRepository ingredientesRepository;
 
-	@Autowired
-	public ReceitasRepositoryJDBC(JdbcTemplate jdbcTemplate,IngredientesRepository ingredientesRepository) {
-		this.jdbcTemplate = jdbcTemplate;
+    public ReceitasRepositoryJDBC(JdbcTemplate jdbcTemplate, IngredientesRepository ingredientesRepository) {
+        this.jdbcTemplate = jdbcTemplate;
         this.ingredientesRepository = ingredientesRepository;
-	}
+    }
 
     @Override
     public Receita recuperaReceita(long id) {

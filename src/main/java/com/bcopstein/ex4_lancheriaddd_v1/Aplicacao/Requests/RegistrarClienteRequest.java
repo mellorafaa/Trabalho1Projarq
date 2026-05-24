@@ -10,6 +10,16 @@ public class RegistrarClienteRequest {
 
     public RegistrarClienteRequest() {}
 
+    public RegistrarClienteRequest(String cpf, String nome, String celular,
+                                   String endereco, String email, String senha) {
+        this.cpf = cpf;
+        this.nome = nome;
+        this.celular = celular;
+        this.endereco = endereco;
+        this.email = email;
+        this.senha = senha;
+    }
+
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
 

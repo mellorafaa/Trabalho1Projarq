@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -28,7 +27,6 @@ public class PedidoRepositoryJDBC implements PedidoRepository {
     private final ClienteRepository clienteRepository;
     private final ProdutosRepository produtosRepository;
 
-    @Autowired
     public PedidoRepositoryJDBC(
             JdbcTemplate jdbcTemplate,
             ClienteRepository clienteRepository,
@@ -138,7 +136,7 @@ public class PedidoRepositoryJDBC implements PedidoRepository {
                 sql,
                 ps -> ps.setLong(1, pedidoId),
                 (rs, rowNum) -> {
-                    Produto produto = produtosRepository.recuperaProdutoPorid(
+                    Produto produto = produtosRepository.recuperaProdutoPorId(
                             rs.getLong("produto_id"));
                     return new ItemPedido(produto, rs.getInt("quantidade"));
                 }

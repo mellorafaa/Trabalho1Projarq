@@ -1,31 +1,17 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao.Seguranca;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.AutenticacaoServico;
 
-/**
- * Filtro/Interceptador JWT para validação de tokens nas requisições
- * Implementa a segurança de entrada do hexágono
- * 
- * Responsabilidades:
- * - Extrair token do header Authorization
- * - Validar token
- * - Permitir ou bloquear a requisição
- */
 @Component
 public class JWTFilter implements HandlerInterceptor {
     
     private final GeradorTokenJWT geradorTokenJWT;
-    private final AutenticacaoServico autenticacaoServico;
     
-    @Autowired
-    public JWTFilter(GeradorTokenJWT geradorTokenJWT, AutenticacaoServico autenticacaoServico) {
+    public JWTFilter(GeradorTokenJWT geradorTokenJWT) {
         this.geradorTokenJWT = geradorTokenJWT;
-        this.autenticacaoServico = autenticacaoServico;
     }
     
     @Override

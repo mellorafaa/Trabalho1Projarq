@@ -1,7 +1,7 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.ClienteRepository;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.ProdutosRepository;
@@ -17,7 +17,6 @@ public class PedidoValidador {
     private final ProdutosRepository produtosRepository;
     private final IEstoqueService estoqueService;
 
-    @Autowired
     public PedidoValidador(
             ClienteRepository clienteRepository,
             ProdutosRepository produtosRepository,
@@ -36,10 +35,10 @@ public class PedidoValidador {
     }
 
     public List<ItemPedido> validarEConverterItens(List<SolicitacaoItem> itensSolicitados) {
-        List<ItemPedido> itens = new java.util.ArrayList<>();
+        List<ItemPedido> itens = new ArrayList<>();
         
         for (SolicitacaoItem solicitacao : itensSolicitados) {
-            Produto produto = produtosRepository.recuperaProdutoPorid(solicitacao.getProdutoId());
+            Produto produto = produtosRepository.recuperaProdutoPorId(solicitacao.getProdutoId());
             if (produto == null) {
                 throw new RuntimeException("Produto não encontrado com ID: " + solicitacao.getProdutoId());
             }
