@@ -4,24 +4,24 @@ import org.springframework.stereotype.Component;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Requests.RegistrarClienteRequest;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.RegistrarClienteResponse;
-import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.UsuarioRepository;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Cliente;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Usuario;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.ClienteService;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.CriptografiaSenhaServico;
+import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.UsuarioService;
 
 @Component
 public class RegistrarClienteUC {
 
     private final ClienteService clienteService;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
     private final CriptografiaSenhaServico criptografiaSenhaServico;
 
     public RegistrarClienteUC(ClienteService clienteService,
-                               UsuarioRepository usuarioRepository,
+                               UsuarioService usuarioService,
                                CriptografiaSenhaServico criptografiaSenhaServico) {
         this.clienteService = clienteService;
-        this.usuarioRepository = usuarioRepository;
+        this.usuarioService = usuarioService;
         this.criptografiaSenhaServico = criptografiaSenhaServico;
     }
 
@@ -45,7 +45,7 @@ public class RegistrarClienteUC {
             clienteService.cadastrarCliente(cliente);
 
             Usuario usuario = new Usuario(request.getEmail(), senhaHash, request.getNome(), "USER");
-            usuarioRepository.salvar(usuario);
+            usuarioService.salvar(usuario);
 
             return new RegistrarClienteResponse(true, "Cliente cadastrado com sucesso.");
         } catch (RuntimeException e) {
