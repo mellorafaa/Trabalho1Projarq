@@ -288,8 +288,9 @@ public class PedidoRepositoryJDBC implements PedidoRepository {
     public long contarPedidosPagosPorCliente(String clienteCpf, LocalDateTime desde) {
         String sql =
             "SELECT COUNT(*) FROM pedidos " +
-            "WHERE cliente_cpf = ? AND data_criacao >= ? " +
-            "  AND (status = 'PAGO' OR status = 'ENTREGUE')";
+            "WHERE cliente_cpf = ? " +
+            "  AND data_criacao >= ? " +
+            "  AND data_hora_pagamento IS NOT NULL";
 
         Long count = jdbcTemplate.queryForObject(
                 sql, Long.class, clienteCpf, Timestamp.valueOf(desde));
